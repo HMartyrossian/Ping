@@ -79,10 +79,6 @@ void CUnityPing::StartReceive(void) {
 }
 
 void CUnityPing::HandleTimeout(void) {
-	if (numReplies == 0) {
-		std::cout << "Request timed out" << std::endl;
-	}
-
 	if (--numRetries == 0) {
 		ioContext.stop();
 	}
@@ -109,8 +105,7 @@ void CUnityPing::HandleReceive(std::size_t length) {
 	// expected sequence number.
 	if (is && icmp_hdr.type() == icmp_header::echo_reply
 		&& icmp_hdr.identifier() == GetIdentifier()
-		&& icmp_hdr.sequence_number() == sequenceNumber)
-	{
+		&& icmp_hdr.sequence_number() == sequenceNumber) {
 		// If this is the first reply, interrupt the five second timeout.
 		if (numReplies++ == 0) {
 			timer.cancel();
@@ -119,14 +114,6 @@ void CUnityPing::HandleReceive(std::size_t length) {
 		// Print out some information about the reply packet.
 		chrono::steady_clock::time_point now = chrono::steady_clock::now();
 		chrono::steady_clock::duration elapsed = now - timeSent;
-
-		std::cout << length - ipv4_hdr.header_length()
-			<< " bytes from " << ipv4_hdr.source_address()
-			<< ": icmp_seq=" << icmp_hdr.sequence_number()
-			<< ", ttl=" << ipv4_hdr.time_to_live()
-			<< ", time="
-			<< chrono::duration_cast<chrono::milliseconds>(elapsed).count()
-			<< std::endl;
 
 		time = chrono::duration_cast<chrono::milliseconds>(elapsed).count();
 
