@@ -27,6 +27,10 @@ bool CUnityPingAPIImpl::Ping(const char* destination) {
 				destinationToPing.insert({ key, value });
 				result = true;
 			}
+			else {
+				// Have to delete CUnityPing object when we can't resolve host name:
+				delete value;
+			}
 		}
 
 		destinationToPingMutex.unlock();
