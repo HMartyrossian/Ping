@@ -48,11 +48,11 @@ bool CUnityPingAPIImpl::Success(const char* destination) {
 			destinationToPingMutex.lock();
 			auto value = destinationToPing.at(key);
 			destinationToPingMutex.unlock();
-			if (value != nullptr) {
-				result = value->Success();
-			}
+			result = value->Success();
 		}
 		catch (std::out_of_range&) {
+			// Violation of protocol.
+			// Might have to throw an exception here.
 		}
 	}
 
